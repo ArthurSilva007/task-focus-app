@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskFocus - Suas Tarefas</title>
+</head>
+<body>
+<h1>Minhas Tarefas</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Título</th>
+        <th>Status</th>
+        <th>Prioridade</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.title}"></td>
+        <td th:text="${task.status}"></td>
+        <td th:text="${task.priority}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
