@@ -3,6 +3,8 @@ package Gestaodetarefa.demo.model;
 import Gestaodetarefa.demo.User.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +23,13 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    private String category; // Adicionado para "Tarefas por Categoria"
+
+    // Novos campos para "Análise Financeira"
+    private BigDecimal value; // Valor financeiro associado à tarefa
+    private String currency;  // Moeda (ex: "BRL", "USD")
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -74,7 +83,31 @@ public class Task {
     }
 
     public void setStatus(Status status) {
-        this.status = status; // A CORREÇÃO ESTÁ AQUI
+        this.status = status;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public User getUser() {

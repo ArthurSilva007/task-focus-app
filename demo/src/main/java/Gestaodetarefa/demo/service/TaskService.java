@@ -43,6 +43,17 @@ public class TaskService {
         return repository.findByPriority(priority);
     }
 
+    // Novo método para buscar tarefas por categoria para todos os usuários (útil para admins, por exemplo)
+    public List<Task> findByCategory(String category) {
+        return repository.findByCategory(category);
+    }
+
+    // Novo método para buscar tarefas de um usuário específico por categoria
+    public List<Task> findTasksByUserAndCategory(User user, String category) {
+        return repository.findByUserAndCategory(user, category);
+    }
+
+
     public List<Task> dueSoon() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime in24h = now.plusHours(24);
@@ -62,6 +73,7 @@ public class TaskService {
             existente.setDueDate(taskAtualizado.getDueDate());
             existente.setPriority(taskAtualizado.getPriority());
             existente.setStatus(taskAtualizado.getStatus());
+            existente.setCategory(taskAtualizado.getCategory()); // Garante que a categoria seja atualizada
             return repository.save(existente);
         } else {
             throw new RuntimeException("Tarefa com id " + id + "nãõo encontrada.");

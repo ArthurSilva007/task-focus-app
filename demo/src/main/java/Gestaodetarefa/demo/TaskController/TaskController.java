@@ -63,6 +63,13 @@ public class TaskController {
     public ResponseEntity<List<Task>> filterByPriority(@PathVariable Priority priority) {
         return ResponseEntity.ok(service.filterByPriority(priority));
     }
+    // Novo endpoint para filtrar tarefas de um usuário por categoria
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Task>> findByCategory(@PathVariable String category, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        List<Task> tasks = service.findTasksByUserAndCategory(currentUser, category);
+        return ResponseEntity.ok(tasks);
+    }
     @GetMapping("/due-soon")
     public ResponseEntity<List<Task>> dueSoon() {
         return ResponseEntity.ok(service.dueSoon());

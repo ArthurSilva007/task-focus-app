@@ -17,4 +17,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByPriority(Priority priority);
     List<Task> findByDueDateBefore(LocalDateTime dateTime);
     List<Task> findByDueDateBetween(LocalDateTime start, LocalDateTime end);
+
+    // Novo método para buscar tarefas por categoria
+    List<Task> findByCategory(String category);
+    // Novo método para buscar tarefas de um usuário por categoria
+    List<Task> findByUserAndCategory(User user, String category);
 }
