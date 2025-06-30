@@ -12,9 +12,9 @@ import { Task } from '../../models/task.model';
   styleUrls: ['./task-form.component.scss']
 })
 export class TaskFormComponent implements OnInit, OnChanges {
-  @Input() taskToEdit: Task | null = null; // Recebe a tarefa para editar do componente pai
+  @Input() taskToEdit: Task | null = null;
   @Output() taskCreated = new EventEmitter<void>();
-  @Output() taskUpdated = new EventEmitter<void>(); // Novo evento para avisar sobre a atualização
+  @Output() taskUpdated = new EventEmitter<void>();
 
   taskForm: FormGroup;
   isEditMode = false;
@@ -24,7 +24,7 @@ export class TaskFormComponent implements OnInit, OnChanges {
     private taskService: TaskService
   ) {
     this.taskForm = this.fb.group({
-      id: [null], // Campo oculto para guardar o ID durante a edição
+      id: [null],
       title: ['', Validators.required],
       description: [''],
       dueDate: ['', Validators.required],
@@ -35,45 +35,34 @@ export class TaskFormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {}
 
-  // Este método especial do Angular é chamado sempre que um @Input (como taskToEdit) muda
   ngOnChanges(changes: SimpleChanges): void {
-    // Verifica se a propriedade 'taskToEdit' mudou e se não é nula
     if (changes['taskToEdit'] && this.taskToEdit) {
       this.isEditMode = true;
-      // Preenche o formulário com os dados da tarefa recebida
-      this.taskForm.patchValue(this.taskToEdit);
+      const formattedDate = this.taskToEdit.dueDate ? this.taskToEdit.dueDate.split('T')[0] : '';
+      this.taskForm.patchValue({ ...this.taskToEdit, dueDate: formattedDate });
     } else {
       this.isEditMode = false;
-      // Garante que o formulário seja limpo corretamente para o modo de criação
       this.taskForm.reset({
-        id: null,
-        title: '',
-        description: '',
-        dueDate: '',
-        priority: 'MEDIA',
-        status: 'A_FAZER'
+        id: null, title: '', description: '', dueDate: '', priority: 'MEDIA', status: 'A_FAZER'
       });
     }
   }
 
   onSubmit(): void {
     if (this.taskForm.valid) {
-      if (this.isEditMode && this.taskForm.value.id) {
-        // MODO DE EDIÇÃO: Chama o método updateTask do serviço
-        this.taskService.updateTask(this.taskForm.value.id, this.taskForm.value).subscribe({
-          next: () => {
-            alert('Tarefa atualizada com sucesso!');
-            this.taskUpdated.emit(); // Avisa o componente pai que a atualização terminou
-          },
+      const formValue = { ...this.taskForm.value };
+      if (formValue.dueDate) {
+        formValue.dueDate = `${formValue.dueDate}T12:00:00`;
+      }
+
+      if (this.isEditMode && formValue.id) {
+        this.taskService.updateTask(formValue.id, formValue).subscribe({
+          next: () => this.taskUpdated.emit(),
           error: (err) => console.error('Erro ao atualizar tarefa', err)
         });
       } else {
-        // MODO DE CRIAÇÃO: Chama o método createTask do serviço
-        this.taskService.createTask(this.taskForm.value).subscribe({
-          next: () => {
-            alert('Tarefa criada!');
-            this.taskCreated.emit(); // Avisa o componente pai que a criação terminou
-          },
+        this.taskService.createTask(formValue).subscribe({
+          next: () => this.taskCreated.emit(),
           error: (err) => console.error('Erro ao criar tarefa', err)
         });
       }
