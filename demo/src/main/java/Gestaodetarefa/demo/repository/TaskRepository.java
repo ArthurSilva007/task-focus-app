@@ -22,4 +22,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByCategory(String category);
     // Novo método para buscar tarefas de um usuário por categoria
     List<Task> findByUserAndCategory(User user, String category);
+
+    long countByUser(User user);
+
+    long countByUserIdAndDueDateBefore(Long userId, LocalDateTime now);
+
+    long countByUserIdAndStatusAndDueDateBetween(Long userId, Status status, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

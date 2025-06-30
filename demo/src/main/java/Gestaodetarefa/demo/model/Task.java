@@ -24,11 +24,10 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private String category; // Adicionado para "Tarefas por Categoria"
+    private String category;
 
-    // Novos campos para "Análise Financeira"
-    private BigDecimal value; // Valor financeiro associado à tarefa
-    private String currency;  // Moeda (ex: "BRL", "USD")
+    private BigDecimal value;
+    private String currency;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

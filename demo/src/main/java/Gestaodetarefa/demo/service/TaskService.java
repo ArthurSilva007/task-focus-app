@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class TaskService {
 
@@ -64,22 +65,30 @@ public class TaskService {
         return repository.findByDueDateBefore(LocalDateTime.now());
     }
 
+
     public Task update(Long id, Task taskAtualizado) {
+
         Optional<Task> opt = repository.findById(id);
+
         if (opt.isPresent()) {
+
             Task existente = opt.get();
+
             existente.setTitle(taskAtualizado.getTitle());
             existente.setDescription(taskAtualizado.getDescription());
             existente.setDueDate(taskAtualizado.getDueDate());
             existente.setPriority(taskAtualizado.getPriority());
             existente.setStatus(taskAtualizado.getStatus());
-            existente.setCategory(taskAtualizado.getCategory()); // Garante que a categoria seja atualizada
+            existente.setValue(taskAtualizado.getValue());
+            existente.setCurrency(taskAtualizado.getCurrency());
+            existente.setCategory(taskAtualizado.getCategory());
+
             return repository.save(existente);
-        } else {
-            throw new RuntimeException("Tarefa com id " + id + "nãõo encontrada.");
+    } else {
+            throw new RuntimeException("Tarefa com id " + id + "não encontrada.");
         }
     }
     public void delete (Long id) {
         repository.deleteById(id);
     }
-}:wq
+}

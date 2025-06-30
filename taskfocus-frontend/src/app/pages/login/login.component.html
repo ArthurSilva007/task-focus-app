@@ -1,0 +1,16 @@
+<div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
+  <div class="card p-4" style="width: 400px;">
+    <h2 class="text-center">Entrar no TaskFocus</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" formControlName="email">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="password" formControlName="password">
+      </div>
+      <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">Entrar</button>
+    </form>
+  </div>
+</div>

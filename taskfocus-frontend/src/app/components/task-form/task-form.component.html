@@ -1,0 +1,33 @@
+<div class="modal-body">
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="title" class="form-label">Título</label>
+      <input type="text" id="title" class="form-control" formControlName="title">
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Descrição</label>
+      <textarea id="description" class="form-control" formControlName="description"></textarea>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="dueDate" class="form-label">Data de Vencimento</label>
+        <input type="date" id="dueDate" class="form-control" formControlName="dueDate">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="priority" class="form-label">Prioridade</label>
+        <select id="priority" class="form-select" formControlName="priority">
+          <option value="ALTA">Alta</option>
+          <option value="MEDIA">Média</option>
+          <option value="BAIXA">Baixa</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">Salvar Tarefa</button>
+    </div>
+  </form>
+</div>
