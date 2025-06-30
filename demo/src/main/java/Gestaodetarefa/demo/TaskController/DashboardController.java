@@ -1,5 +1,6 @@
 package Gestaodetarefa.demo.TaskController;
 
+import Gestaodetarefa.demo.model.ChartDataDTO;
 import Gestaodetarefa.demo.model.DashboardStatsDTO;
 import Gestaodetarefa.demo.service.DashboardService;
 import Gestaodetarefa.demo.User.User;
@@ -22,5 +23,11 @@ public class DashboardController {
         User currentUser = (User) authentication.getPrincipal();
         DashboardStatsDTO stats = dashboardService.getStatsForUser(currentUser);
         return ResponseEntity.ok(stats);
+    }
+    @GetMapping("/tasks-by-status")
+    public ResponseEntity<ChartDataDTO> getTasksByStatusChart(Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        ChartDataDTO chartData = dashboardService.getTasksByStatusChartForUser(currentUser);
+        return ResponseEntity.ok(chartData);
     }
 }

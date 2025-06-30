@@ -28,4 +28,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     long countByUserIdAndDueDateBefore(Long userId, LocalDateTime now);
 
     long countByUserIdAndStatusAndDueDateBetween(Long userId, Status status, LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    long countByUserAndStatus(User user, Status status);
 }

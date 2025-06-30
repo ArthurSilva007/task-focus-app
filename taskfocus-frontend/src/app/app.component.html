@@ -1,1 +1,24 @@
-<router-outlet></router-outlet>
+<div class="d-flex">
+  <!-- Sidebar Fixa -->
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 250px; height: 100vh;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <i class="bi bi-bullseye me-2 fs-4"></i>
+      <span class="fs-4">TaskFocus</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link text-white">
+          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+        </a>
+      </li>
+      <!-- Adicionaremos mais links aqui -->
+    </ul>
+    <hr>
+  </div>
+
+  <!-- Área de Conteúdo Principal -->
+  <main class="container-fluid p-4">
+    <router-outlet></router-outlet> <!-- As páginas serão carregadas aqui -->
+  </main>
+</div>

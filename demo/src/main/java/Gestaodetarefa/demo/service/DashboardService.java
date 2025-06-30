@@ -1,5 +1,6 @@
 package Gestaodetarefa.demo.service;
 
+import Gestaodetarefa.demo.model.ChartDataDTO;
 import Gestaodetarefa.demo.model.DashboardStatsDTO;
 import Gestaodetarefa.demo.model.Status;
 import Gestaodetarefa.demo.User.User;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class DashboardService {
@@ -25,5 +28,15 @@ public class DashboardService {
         long completed = taskRepository.countByUserIdAndStatusAndDueDateBetween(user.getId(), Status.CONCLUIDO, startOfDay, endOfDay);
 
         return new DashboardStatsDTO(total, overdue, completed);
+    }
+    public ChartDataDTO getTasksByStatusChartForUser(User user) {
+        long pending = taskRepository.countByUserAndStatus(user, Status.A_FAZER);
+        long inProgress = taskRepository.countByUserAndStatus(user, Status.EM_PROGRESSO);
+        long completed = taskRepository.countByUserAndStatus(user, Status.CONCLUIDO);
+
+        List<String> labels = Arrays.asList("A Fazer", "Em Progresso", "Concluído");
+        List<Long> data = Arrays.asList(pending, inProgress, completed);
+
+        return new ChartDataDTO(labels, data);
     }
 }
