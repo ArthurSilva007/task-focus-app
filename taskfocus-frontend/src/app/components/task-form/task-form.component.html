@@ -1,33 +1,50 @@
-<div class="modal-body">
-  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label for="title" class="form-label">Título</label>
-      <input type="text" id="title" class="form-control" formControlName="title">
-    </div>
+<!-- O formulário é envolvido pela tag <form> e conectado ao nosso FormGroup no TypeScript -->
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
 
-    <div class="mb-3">
-      <label for="description" class="form-label">Descrição</label>
-      <textarea id="description" class="form-control" formControlName="description"></textarea>
-    </div>
+  <!-- Campo Título -->
+  <div class="mb-3">
+    <label for="title" class="form-label">Título</label>
+    <input type="text" id="title" class="form-control" formControlName="title">
+  </div>
 
-    <div class="row">
-      <div class="col-md-6 mb-3">
-        <label for="dueDate" class="form-label">Data de Vencimento</label>
-        <input type="date" id="dueDate" class="form-control" formControlName="dueDate">
-      </div>
-      <div class="col-md-6 mb-3">
-        <label for="priority" class="form-label">Prioridade</label>
-        <select id="priority" class="form-select" formControlName="priority">
-          <option value="ALTA">Alta</option>
-          <option value="MEDIA">Média</option>
-          <option value="BAIXA">Baixa</option>
-        </select>
-      </div>
-    </div>
+  <!-- Campo Descrição -->
+  <div class="mb-3">
+    <label for="description" class="form-label">Descrição</label>
+    <textarea id="description" class="form-control" formControlName="description" rows="3"></textarea>
+  </div>
 
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-      <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">Salvar Tarefa</button>
+  <!-- Linha para Data e Prioridade -->
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="dueDate" class="form-label">Data de Vencimento</label>
+      <input type="date" id="dueDate" class="form-control" formControlName="dueDate">
     </div>
-  </form>
-</div>
+    <div class="col-md-6 mb-3">
+      <label for="priority" class="form-label">Prioridade</label>
+      <select id="priority" class="form-select" formControlName="priority">
+        <option value="ALTA">Alta</option>
+        <option value="MEDIA">Média</option>
+        <option value="BAIXA">Baixa</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Linha para Status -->
+  <div class="mb-3">
+    <label for="status" class="form-label">Status</label>
+    <select id="status" class="form-select" formControlName="status">
+      <option value="A_FAZER">A Fazer</option>
+      <option value="EM_PROGRESSO">Em Progresso</option>
+      <option value="CONCLUIDO">Concluído</option>
+    </select>
+  </div>
+
+  <!-- Botões de Ação -->
+  <div class="modal-footer mt-4 p-0">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">
+      {{ isEditMode ? 'Atualizar Tarefa' : 'Salvar Tarefa' }}
+    </button>
+  </div>
+
+</form>

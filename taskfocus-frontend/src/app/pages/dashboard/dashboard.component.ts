@@ -1,12 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { DashboardService } from '../../services/dashboard.service';
 import { DashboardStats } from '../../models/dashboard-stats.model';
 import { TaskService } from '../../services/task.service';
 import { Task } from '../../models/task.model';
 import { TaskFormComponent } from '../../components/task-form/task-form.component';
 import { PieChartComponent } from '../../components/charts/pie-chart/pie-chart.component';
- import { Modal } from 'bootstrap';
+
+// Importamos o Modal de forma seletiva para evitar problemas no servidor
+let Modal: any = null;
 
 @Component({
   selector: 'app-dashboard',
@@ -20,31 +22,33 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   tasks: Task[] = [];
   currentTaskToEdit: Task | null = null;
 
-  // Variáveis do gráfico
   statusChartLabels: string[] = [];
   statusChartData: number[] = [];
 
-  // Referência para o elemento do modal no HTML
   @ViewChild('taskFormModal') taskModalElement!: ElementRef;
-  private bootstrapModal: Modal | undefined;
+  private bootstrapModal: any;
 
   constructor(
     private dashboardService: DashboardService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    @Inject(PLATFORM_ID) private platformId: Object // Injeta um token para saber o ambiente
   ) {}
 
   ngOnInit(): void {
     this.loadInitialData();
   }
 
-  ngAfterViewInit(): void {
-    if (this.taskModalElement) {
-      import('bootstrap').then(({ Modal }) => {
+  async ngAfterViewInit(): Promise<void> {
+    // A CORREÇÃO FINAL: Só carrega e inicializa o Modal se estivermos num navegador.
+    if (isPlatformBrowser(this.platformId)) {
+      // Importa a classe Modal dinamicamente, apenas no lado do cliente
+      const bootstrap = await import('bootstrap');
+      Modal = bootstrap.Modal;
+      if (this.taskModalElement) {
         this.bootstrapModal = new Modal(this.taskModalElement.nativeElement);
-      });
+      }
     }
   }
-
 
   loadInitialData(): void {
     this.loadStats();
@@ -57,15 +61,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   loadTasks(): void {
-    this.taskService.getTasks().subscribe(data => {
-      this.tasks = data;
-      console.log('Tarefas carregadas!', data);
-    });
+    this.taskService.getTasks().subscribe(data => this.tasks = data);
   }
 
   loadChartData(): void {
-    // Este método buscará os dados do gráfico.
-    // Certifique-se de que o método getTasksByStatusChart() existe no seu DashboardService.
     this.dashboardService.getTasksByStatusChart().subscribe(data => {
       this.statusChartLabels = data.labels;
       this.statusChartData = data.data;
@@ -82,21 +81,19 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.bootstrapModal?.show();
   }
 
-  // Este método é chamado quando uma tarefa é criada ou atualizada
   handleTaskUpdate(): void {
-    this.loadInitialData(); // Recarrega todos os dados
-    this.bootstrapModal?.hide(); // Fecha o modal
+    this.loadInitialData();
+    this.bootstrapModal?.hide();
   }
 
-  // O MÉTODO DELETE, AGORA NO LUGAR CORRETO
   deleteTask(taskId: number): void {
-    if (confirm('Tem certeza que deseja deletar esta tarefa?')) {
+    if (confirm('Tem a certeza que deseja apagar esta tarefa?')) {
       this.taskService.deleteTask(taskId).subscribe({
         next: () => {
-          console.log('Tarefa deletada com sucesso');
-          this.loadInitialData(); // Recarrega todos os dados
+          console.log('Tarefa apagada com sucesso');
+          this.loadInitialData();
         },
-        error: (err) => console.error('Erro ao deletar tarefa', err)
+        error: (err) => console.error('Erro ao apagar tarefa', err)
       });
     }
   }
