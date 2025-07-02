@@ -1,1 +1,48 @@
-<p>register works!</p>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-action-secondary">
+      <h1 class="branding-title">TaskFocus</h1>
+      <h2 class="branding-welcome">Bem-vindo!</h2>
+      <p class="branding-text">Já possui uma conta?</p>
+      <div class="icon-placeholder">
+        <i class="bi bi-person-check-fill"></i>
+      </div>
+      <p>Acesse sua conta agora mesmo e volte a focar nas suas metas.</p>
+      <a routerLink="/login" class="btn btn-secondary-custom">Entrar</a>
+    </div>
+
+    <div class="auth-branding">
+      <h3 class="form-title">Crie sua conta</h3>
+      <p class="form-subtitle">Preencha seus dados</p>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form-register">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-person"></i></span>
+              <input type="text" class="form-control" placeholder="Nome" formControlName="firstname">
+            </div>
+          </div>
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control" placeholder="Email" formControlName="email">
+        </div>
+
+        <div class="input-group mb-4">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control" placeholder="Senha (mínimo 6 caracteres)" formControlName="password">
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger p-2 text-center mb-3">
+          {{ errorMessage }}
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary-custom" [disabled]="registerForm.invalid">Cadastrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

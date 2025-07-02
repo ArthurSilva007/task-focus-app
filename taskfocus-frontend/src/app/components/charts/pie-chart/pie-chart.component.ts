@@ -1,64 +1,83 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import Chart from 'chart.js/auto'; // Importa a biblioteca principal
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-pie-chart',
   standalone: true,
   imports: [CommonModule],
-  template: `<canvas #pieCanvas></canvas>`, // O template é apenas o canvas para o gráfico
-  styleUrls: ['./pie-chart.component.scss']
+  template: '<canvas #pieChartCanvas></canvas>',
 })
-export class PieChartComponent implements AfterViewInit, OnChanges {
+export class PieChartComponent implements OnChanges, AfterViewInit {
+  @ViewChild('pieChartCanvas') pieChartCanvas?: ElementRef<HTMLCanvasElement>;
+
   @Input() chartData: number[] = [];
   @Input() chartLabels: string[] = [];
-  @ViewChild('pieCanvas') pieCanvas!: ElementRef;
 
-  chart: any;
+  private chart?: Chart;
 
-  constructor() { }
+  private readonly chartColors = [
+    '#8BE9FD', // Em Andamento (Azul)
+    '#FFB86C', // Pendente (Laranja)
+    '#50FA7B', // Concluído (Verde)
+    '#FF79C6', // Outra cor (Rosa)
+    '#BD93F9'  // Outra cor (Roxo)
+  ];
 
   ngAfterViewInit(): void {
     this.createChart();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Se os dados ou os rótulos mudarem, atualiza o gráfico
-    if (this.chart && (changes['chartData'] || changes['chartLabels'])) {
-      this.chart.data.labels = this.chartLabels;
-      this.chart.data.datasets[0].data = this.chartData;
-      this.chart.update();
+    // Apenas atualiza o gráfico se ele já tiver sido criado
+    if (this.chart) {
+      this.updateChart();
     }
   }
 
-  createChart(): void {
-    // Previne a criação de múltiplos gráficos no mesmo canvas
-    if (this.chart) {
-      this.chart.destroy();
+  private createChart(): void {
+    if (!this.pieChartCanvas) {
+      return;
+    }
+    const ctx = this.pieChartCanvas.nativeElement.getContext('2d');
+    if (!ctx) {
+      return;
     }
 
-    this.chart = new Chart(this.pieCanvas.nativeElement, {
-      type: 'pie', // ou 'doughnut' para o gráfico de anel
+    this.chart = new Chart(ctx, {
+      type: 'doughnut',
       data: {
         labels: this.chartLabels,
         datasets: [{
-          label: 'Tarefas por Status',
           data: this.chartData,
-          backgroundColor: [
-            '#FF6384', // Cor para o primeiro valor (ex: A Fazer)
-            '#36A2EB', // Cor para o segundo valor (ex: Em Progresso)
-            '#FFCE56'  // Cor para o terceiro valor (ex: Concluído)
-          ],
+          backgroundColor: this.chartColors,
+          borderColor: '#1A1A2E',
+          borderWidth: 4,
+          hoverOffset: 8
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
+            display: true,
             position: 'top',
+            labels: {
+              color: '#A9A9A9'
+            }
           }
-        }
+        },
+        cutout: '70%'
       }
     });
+  }
+
+  private updateChart(): void {
+    if (this.chart) {
+      this.chart.data.labels = this.chartLabels;
+      this.chart.data.datasets[0].data = this.chartData;
+      this.chart.update();
+    }
   }
 }

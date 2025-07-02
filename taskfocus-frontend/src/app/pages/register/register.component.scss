@@ -1,0 +1,31 @@
+// Importamos os estilos que já criamos para o login para reutilizá-los
+@import "../login/login.component.scss";
+
+// A única diferença é a ordem das colunas
+.auth-card {
+  // Invertemos a ordem das colunas para a tela de registro
+  grid-template-columns: 45% 55%;
+}
+
+// Pequenos ajustes específicos para o formulário de registro
+.auth-branding {
+  justify-content: center; // Centraliza o conteúdo da coluna do formulário
+}
+
+.form-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-subtitle {
+  text-align: center;
+  color: var(--cor-texto-secundario);
+  margin-bottom: 30px;
+}
+
+// Estilo para a coluna secundária (que agora é o convite para o login)
+.auth-action-secondary {
+  @extend .auth-action; // Herda todos os estilos da coluna de ação do login
+  background-color: #000;
+}

@@ -1,0 +1,84 @@
+// Usando as variáveis globais que definimos
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.main-container {
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: var(--cor-fundo-secundario);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+  transition: width 0.3s ease;
+  border-right: 1px solid var(--cor-borda);
+}
+
+.sidebar-header {
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  .sidebar-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cor-texto-principal);
+    text-align: center;
+  }
+}
+
+.sidebar-nav {
+  flex-grow: 1; // Empurra o footer para baixo
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: var(--cor-texto-secundario);
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  i {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    width: 20px; // Alinha os ícones
+    text-align: center;
+  }
+
+  span {
+    font-weight: 500;
+  }
+
+  &:hover {
+    background-color: var(--cor-primaria-accent);
+    color: var(--cor-texto-principal);
+  }
+
+  &.active {
+    background-color: var(--cor-primaria-accent);
+    color: var(--cor-texto-principal);
+    font-weight: 600;
+  }
+}
+
+.sidebar-footer {
+  padding-top: 15px;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  overflow-y: auto; // Adiciona scroll se o conteúdo for maior que a tela
+}
+
+// Estilo para quando não há sidebar (tela de login)
+.main-container.no-sidebar .main-content {
+  padding: 0;
+}

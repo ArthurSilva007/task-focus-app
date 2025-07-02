@@ -1,5 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+/* ========================================= */
+/* DEFINIÇÕES GLOBAIS DE ESTILO         */
+/* ========================================= */
+
+// Paleta de Cores (extraída do seu design)
+:root {
+  --cor-fundo-principal: #10111A; // O azul bem escuro do fundo
+  --cor-fundo-secundario: #1A1A2E; // O tom mais claro dos cards
+  --cor-primaria-accent: #6C63FF; // O roxo/azul do botão principal e detalhes
+  --cor-texto-principal: #FFFFFF;
+  --cor-texto-secundario: #A9A9A9; // Para textos mais sutis
+  --cor-borda: #33334D;
+  --cor-sucesso: #50fa7b;
+  --cor-erro: #ff5555;
+  --cor-info: #8be9fd;
+}
+
+// Estilos Globais do Corpo da Página
 body {
-  background-color: #1a1a2e; // Um azul bem escuro, como no seu Figma
-  color: #e0e0e0; // Um texto branco suave
+  background-color: var(--cor-fundo-principal);
+  color: var(--cor-texto-principal);
+  font-family: 'Poppins', sans-serif; // Vamos assumir Poppins por enquanto, é uma ótima fonte web.
+}
+
+// Estilização padrão para os toasts do ngx-toastr
+.toast-container .ngx-toastr {
+  background-color: #282A36 !important;
+  box-shadow: 0 0 12px #000 !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--cor-borda) !important;
 }

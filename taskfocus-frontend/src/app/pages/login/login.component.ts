@@ -1,48 +1,67 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // Importe ReactiveFormsModule
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  errorMessage: string | null = null;
+  registrationSuccess = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required]],
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['registered'] === 'true') {
+        this.registrationSuccess = true;
+      }
     });
   }
 
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          console.log('Login bem-sucedido! Token:', response.token);
-
-          // Passo 1: Salvar o token no localStorage
-          localStorage.setItem('authToken', response.token);
-
-          // Passo 2: Redirecionar para a página do dashboard
-          this.router.navigate(['/dashboard']);
-        },
-        error: (err) => {
-          console.error('Erro no login', err);
-          alert('Erro no login. Verifique suas credenciais.');
-        }
-      });
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    this.errorMessage = null;
+
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (response) => {
+        console.log("Login bem-sucedido! Resposta do backend:", response); // Log para depuração
+
+        if (isPlatformBrowser(this.platformId) && response?.token) {
+          localStorage.setItem('authToken', response.token);
+          console.log("Token salvo no localStorage. Redirecionando para /dashboard..."); // Log para depuração
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      error: (err) => {
+        console.error("Erro no login:", err); // Log para depuração
+        this.errorMessage = 'Credenciais inválidas ou erro no servidor.';
+      },
+    });
   }
 }
-

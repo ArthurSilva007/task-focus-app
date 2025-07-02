@@ -1,16 +1,46 @@
-<div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
-  <div class="card p-4" style="width: 400px;">
-    <h2 class="text-center">Entrar no TaskFocus</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" formControlName="email">
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-branding">
+      <h1 class="branding-title">TaskFocus</h1>
+      <p class="branding-subtitle">Compromisso e Cuidado + Tecnologia</p>
+      <h2 class="branding-welcome">Bem-vindo de volta!</h2>
+      <p class="branding-text">Acesse sua conta agora mesmo.</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <div *ngIf="registrationSuccess" class="alert alert-success p-2 text-center mb-3">
+          Registro feito com sucesso!
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control" placeholder="Email" formControlName="email">
+        </div>
+
+        <div class="input-group mb-4">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control" placeholder="Senha" formControlName="password">
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger p-2 text-center mb-3">
+          {{ errorMessage }}
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary-custom" [disabled]="loginForm.invalid">Entrar</button>
+        </div>
+      </form>
+
+      <a routerLink="/" class="forgot-password">Esqueci minha senha</a>
+    </div>
+
+    <div class="auth-action">
+      <h3>Crie sua conta</h3>
+      <p>Crie Hábitos com TaskFocus</p>
+      <div class="icon-placeholder">
+        <i class="bi bi-card-checklist"></i>
       </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="password" formControlName="password">
-      </div>
-      <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">Entrar</button>
-    </form>
+      <p>Crie sua conta agora mesmo.</p>
+      <a routerLink="/register" class="btn btn-secondary-custom">Cadastrar</a>
+    </div>
   </div>
 </div>

@@ -12,23 +12,22 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     /**
-     * Envia um e-mail de notificação.
-     *
-     * @param to destinatário
-     * @param subject assunto do e-mail
-     * @param body corpo do e-mail
+     * Envia um e-mail de notificação para um destinatário específico.
+     * @param to o endereço de e-mail do destinatário.
+     * @param subject o assunto do e-mail.
+     * @param text o corpo do e-mail.
      */
-    public void sendNotificationEmail(String to, String subject, String body) {
+    public void sendNotificationEmail(String to, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("notify@taskfocus.com");
-            message.setTo(to);
+            // O e-mail "de" é configurado no application.properties
+            message.setTo(to); // Usa o e-mail do dono da tarefa
             message.setSubject(subject);
-            message.setText(body);
+            message.setText(text);
             mailSender.send(message);
-            System.out.println(">>> E-mail de notificação enviado para " + to);
+            System.out.println("Email de notificação enviado para: " + to);
         } catch (Exception e) {
-            System.err.println("!!! Erro ao enviar e-mail: " + e.getMessage());
+            System.err.println("Erro ao enviar e-mail para " + to + ": " + e.getMessage());
         }
     }
 }

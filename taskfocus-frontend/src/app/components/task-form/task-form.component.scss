@@ -1,0 +1,39 @@
+// Importando nossas variáveis globais
+@import '../../../styles.scss';
+
+// Estilo para os inputs do formulário de tarefas
+:host {
+  .form-control, .form-select {
+    background-color: var(--cor-fundo-principal);
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto-principal);
+    border-radius: 8px;
+    padding: 12px;
+
+    &:focus {
+      background-color: var(--cor-fundo-principal);
+      border-color: var(--cor-primaria-accent);
+      box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.25); // Um brilho suave ao focar
+      color: var(--cor-texto-principal);
+    }
+  }
+
+  .form-label {
+    color: var(--cor-texto-secundario);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+}
+
+// Botões com nosso estilo primário
+.btn-primary-custom {
+  background-color: var(--cor-primaria-accent);
+  border: none;
+  padding: 12px 25px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: filter 0.2s ease-in-out;
+  &:hover {
+    filter: brightness(1.2);
+  }
+}

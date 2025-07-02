@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  // A URL do seu backend
+
   private apiUrl = 'http://localhost:8080/api/auth';
 
   constructor(private http: HttpClient) { }
@@ -15,5 +15,12 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials);
   }
 
-  // Adicionaremos os métodos de registro e logout aqui depois
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
+  }
+
+  logout(): void {
+    localStorage.removeItem('authToken');
+  }
+  // --------------------------
 }

@@ -1,99 +1,100 @@
-<div class="container-fluid">
-  <h1 class="mb-4">Painel de Controle</h1>
+<div class="dashboard-container">
+  <h1 class="page-title">Painel de Controle | Hábitos</h1>
 
-  <!-- Cards de KPI -->
-  <div class="row">
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card bg-dark text-white h-100">
-        <div class="card-body">
-          <div class="card-title">Total de Tarefas Ativas</div>
-          <div class="display-4">{{ stats.totalTasks }}</div>
-        </div>
+  <div class="main-content-grid">
+
+    <div class="card-item span-col-2">
+      <div class="card-header">Progresso de hábitos semanais</div>
+      <div class="card-body">
+        <app-bar-chart [chartData]="weeklyProgressData" [chartLabels]="weeklyProgressLabels"></app-bar-chart>
       </div>
     </div>
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card bg-dark text-white h-100">
-        <div class="card-body">
-          <div class="card-title">Tarefas Vencidas</div>
-          <div class="display-4 text-danger">{{ stats.overdueTasks }}</div>
-        </div>
+
+    <div class="summary-card-placeholder">
+      <div class="card-header">Resumo financeiro do mês</div>
+      <div class="card-body">
       </div>
     </div>
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card bg-dark text-white h-100">
-        <div class="card-body">
-          <div class="card-title">Concluídas Hoje</div>
-          <div class="display-4 text-success">{{ stats.completedToday }}</div>
-        </div>
+
+    <div class="card-item">
+      <div class="card-header">Distribuição de tipos de hábitos</div>
+      <div class="card-body">
+        <app-pie-chart [chartData]="habitDistributionData" [chartLabels]="habitDistributionLabels"></app-pie-chart>
       </div>
     </div>
-  </div>
 
-  <!-- Gráficos -->
-  <div class="row">
-    <div class="col-lg-6 mb-4">
-      <div class="card bg-dark text-white h-100">
-        <div class="card-header">Tarefas por Status</div>
-        <div class="card-body">
-          <app-pie-chart [chartData]="statusChartData" [chartLabels]="statusChartLabels"></app-pie-chart>
-        </div>
+    <div class="summary-card">
+      <span class="summary-label">Avanço total de hábitos</span>
+      <div class="summary-main">
+        <div class="summary-percentage">{{ totalHabitPercentage }}%</div>
+        <div class="summary-description">Hábitos concluídos</div>
+      </div>
+      <div class="summary-sub">
+        <i class="bi bi-list-check"></i>
+        <span>{{ averageDailyHabits }} Média diária de hábitos</span>
       </div>
     </div>
-  </div>
 
-  <hr class="my-4">
+    <div class="summary-card">
+      <span class="summary-label">Total de gastos no mês</span>
+      <div class="summary-main">
+        <div class="summary-value">{{ totalMonthSpending | currency:'BRL':'symbol':'1.2-2' }}</div>
+      </div>
+      <div class="summary-sub">
+        <i class="bi bi-wallet2"></i>
+        <span>Gastos totais</span>
+      </div>
+    </div>
 
-  <!-- Seção de Tarefas -->
-  <div class="d-flex justify-content-between align-items-center">
-    <h2>Minhas Tarefas</h2>
-    <button type="button" class="btn btn-primary" (click)="openCreateModal()">
-      <i class="bi bi-plus-lg"></i> Nova Tarefa
+  </div> <div class="task-table-card">
+  <div class="task-table-header">
+    <h4 class="task-table-title">Minhas Tarefas</h4>
+    <button class="btn btn-primary-custom" (click)="openCreateModal()">
+      <i class="bi bi-plus-lg me-1"></i> Nova Tarefa
     </button>
   </div>
-
-  <!-- Tabela de Tarefas -->
-  <div class="table-responsive mt-3">
-    <table class="table table-dark table-striped table-hover">
+  <div class="table-responsive">
+    <table class="table-custom">
       <thead>
       <tr>
-        <th>Título</th>
         <th>Status</th>
+        <th>Título</th>
         <th>Prioridade</th>
         <th>Vencimento</th>
-        <th>Ações</th>
+        <th class="text-center">Ações</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let task of tasks">
+        <td><span class="badge" [ngClass]="getStatusClass(task.status)">{{ task.status.replace('_', ' ') | titlecase }}</span></td>
         <td>{{ task.title }}</td>
-        <td>{{ task.status }}</td>
-        <td>{{ task.priority }}</td>
-        <td>{{ task.dueDate | date:'dd/MM/yyyy' }}</td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditModal(task)">Editar</button>
-          <button class="btn btn-sm btn-outline-danger" (click)="deleteTask(task.id)">Deletar</button>
+        <td>{{ task.priority | titlecase }}</td>
+        <td>{{ task.dueDate | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td class="actions-cell">
+          <button class="btn-icon" (click)="openEditModal(task)" title="Editar Tarefa"><i class="bi bi-pencil-square"></i></button>
+          <button class="btn-icon btn-icon-danger" (click)="deleteTask(task)" title="Deletar Tarefa"><i class="bi bi-trash"></i></button>
         </td>
+      </tr>
+      <tr *ngIf="tasks.length === 0">
+        <td colspan="5" class="text-center p-5">Nenhuma tarefa encontrada.</td>
       </tr>
       </tbody>
     </table>
   </div>
+</div>
 
-  <!-- Modal de Formulário de Tarefa -->
-  <div class="modal fade" id="taskFormModal" #taskFormModal tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content bg-dark text-white">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ currentTaskToEdit ? 'Editar Tarefa' : 'Criar Nova Tarefa' }}</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          <app-task-form
-            [taskToEdit]="currentTaskToEdit"
-            (taskCreated)="handleTaskUpdate()"
-            (taskUpdated)="handleTaskUpdate()">
-          </app-task-form>
-        </div>
+</div> <div class="modal fade" id="taskFormModal" #taskFormModal tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content-custom">
+      <div class="modal-header-custom">
+        <h5 class="modal-title">{{ currentTaskToEdit ? 'Editar Tarefa' : 'Criar Nova Tarefa' }}</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body-custom">
+        <app-task-form [taskToEdit]="currentTaskToEdit" (taskCreated)="handleTaskUpdate()" (taskUpdated)="handleTaskUpdate()"></app-task-form>
       </div>
     </div>
   </div>
 </div>
+
+<app-confirmation-modal *ngIf="showDeleteConfirmation" title="Confirmar Exclusão" [message]="'Você tem certeza que deseja deletar a tarefa &quot;' + taskToDelete?.title + '&quot;?'" (onConfirm)="confirmDelete()" (onCancel)="cancelDelete()"></app-confirmation-modal>

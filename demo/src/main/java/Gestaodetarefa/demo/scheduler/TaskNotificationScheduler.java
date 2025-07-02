@@ -1,54 +1,69 @@
 package Gestaodetarefa.demo.scheduler;
 
+// --- IMPORTS CORRIGIDOS ---
+import Gestaodetarefa.demo.User.User; // A linha que faltava
 import Gestaodetarefa.demo.email.EMAILSEVICE.EmailService;
+import Gestaodetarefa.demo.model.Status;
 import Gestaodetarefa.demo.model.Task;
-import Gestaodetarefa.demo.service.TaskService;
+import Gestaodetarefa.demo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TaskNotificationScheduler {
 
-    // TODO: Implementar lógica de agendamento de notificações aqui
-
     @Autowired
-    private TaskService taskService;
+    private TaskRepository taskRepository;
 
     @Autowired
     private EmailService emailService;
 
-    @Scheduled(fixedRate = 60000)
-    public void verificarTarefas() {
-        List<Task> atrasadas = taskService.overdue();
-        List<Task> proximas = taskService.dueSoon();
+    // Roda a cada minuto
+    @Scheduled(cron = "0 * * * * *")
+    public void verificarTarefasEEnviarNotificacoes() {
+        System.out.println("Executando verificação de tarefas agendadas... " + LocalDateTime.now());
 
-        if (!atrasadas.isEmpty()) {
-            System.out.println(">>> Detectadas " + atrasadas.size() + " TAREFAS ATRASADAS. ENVIANDO E-MAILS...");
-            atrasadas.forEach(task -> {
-                String subject = "ALERTA: Tarefas Atrasadas - " + task.getTitle();
-                String body = "A sua tarefa '" + task.getTitle() + "' esta atrasada! O prazo ja era " + task.getDueDate() + ".";
+        // 1. Pega todas as tarefas que não estão concluídas
+        List<Task> tarefasNaoConcluidas = taskRepository.findByStatusNot(Status.CONCLUIDO);
 
-                String recipientEmail = "andersonarthur740@gmail.com";
-                emailService.sendNotificationEmail(recipientEmail, subject, body);
-            });
+        // 2. Filtra apenas as que estão atrasadas (venceram antes de agora)
+        List<Task> tarefasAtrasadas = tarefasNaoConcluidas.stream()
+                .filter(task -> task.getDueDate() != null && task.getDueDate().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+
+        if (tarefasAtrasadas.isEmpty()) {
+            System.out.println(">>> Nenhuma tarefa atrasada encontrada.");
+            return;
         }
 
-        if (!proximas.isEmpty()) {
-            System.out.print(">>> DETECTADAS " + proximas.size() + " TAREFAS PRÓXIMAS DO VENCIMENTO. ENVIANDO E-MAILS...");
-            proximas.forEach(task -> {
-                String subject = "LEMBRETE: Tarefas Próximas do vencimento - " + task.getTitle();
-                String body = "A sua tarefa '" + task.getTitle() + "'esta proxima do vencimento. O prazo é´" + task.getTitle() + ".";
-                String recipientEmail = "andersonarthur740@gmail.com";
+        System.out.println(">>> Detectadas " + tarefasAtrasadas.size() + " tarefas atrasadas. Enviando e-mails...");
 
-                emailService.sendNotificationEmail(recipientEmail, subject, body);
+        for (Task task : tarefasAtrasadas) {
+            // O código agora vai funcionar, pois ele sabe o que é um "User"
+            if (task.getUser() == null || task.getUser().getEmail() == null) {
+                continue;
+            }
 
-            });
-        }
-        if (atrasadas.isEmpty() && proximas.isEmpty()){
-            System.out.println(">>> Nenhuma tarefa urgente o momento. Verificação concluida.");
+            User user = task.getUser();
+            String userEmail = user.getEmail();
+            String userFirstName = user.getFirstname();
+
+            String subject = "Alerta: Tarefa Atrasada - " + task.getTitle();
+            String text = String.format(
+                    "Olá, %s.\n\nA sua tarefa \"%s\" está atrasada!\n\n" +
+                            "Data de Vencimento: %s\n" +
+                            "Prioridade: %s\n\n" +
+                            "Acesse o TaskFocus para atualizá-la.",
+                    userFirstName,
+                    task.getTitle(),
+                    task.getDueDate().toString(),
+                    task.getPriority()
+            );
+            emailService.sendNotificationEmail(userEmail, subject, text);
         }
     }
 }
