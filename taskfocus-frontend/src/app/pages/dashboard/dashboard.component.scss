@@ -8,7 +8,7 @@
   margin-bottom: 30px;
 }
 
-// Grid principal que organiza os cards e gráficos
+// Grid principal
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -17,7 +17,7 @@
 }
 
 // Estilo base para os cards
-.card-item, .summary-card, .summary-card-placeholder {
+.card-item, .summary-card, .placeholder-card {
   background-color: var(--cor-fundo-secundario);
   padding: 25px;
   border-radius: 12px;
@@ -27,7 +27,6 @@
   min-height: 280px;
 }
 
-// Classe para um card ocupar 2 colunas do grid
 @media (min-width: 1024px) {
   .span-col-2 {
     grid-column: span 2;
@@ -47,10 +46,9 @@
   justify-content: center;
 }
 
-// Estilos para os cards de resumo
+// Cards de resumo
 .summary-card {
   justify-content: space-between;
-
   .summary-label {
     font-size: 0.9rem;
     color: var(--cor-texto-secundario);
@@ -66,24 +64,21 @@
     gap: 10px;
     font-size: 0.9rem;
     color: var(--cor-texto-secundario);
-    i {
-      font-size: 1.2rem;
-      color: var(--cor-primaria-accent);
-    }
+    i { font-size: 1.2rem; color: var(--cor-primaria-accent); }
   }
 }
 
-.summary-card-placeholder {
-  background-color: #282a36;
+.placeholder-card {
+  background-color: #282a36; // Cinza escuro para o placeholder
 }
 
-// Estilo da tabela de tarefas
+// Tabela de tarefas
 .task-table-card {
   background-color: var(--cor-fundo-secundario);
   border-radius: 12px;
   border: 1px solid var(--cor-borda);
   padding: 25px;
-  margin-top: 30px; // Adiciona um espaço acima da tabela
+  margin-top: 30px;
 }
 .task-table-header {
   display: flex;
@@ -125,7 +120,7 @@
   gap: 15px;
 }
 
-.btn-icon {
+.btn-icon, .btn-primary-custom, .badge {
   background: none;
   border: none;
   color: var(--cor-texto-secundario);
